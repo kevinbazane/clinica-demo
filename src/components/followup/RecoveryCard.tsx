@@ -28,7 +28,7 @@ export default function RecoveryCard({ patient, daysSinceLastVisit, lastTreatmen
   return (
     <>
       <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-base font-semibold text-gray-900 truncate">{patient.full_name}</p>
             <div className="flex items-center gap-2 mt-1 flex-wrap text-sm text-gray-500">
@@ -42,7 +42,7 @@ export default function RecoveryCard({ patient, daysSinceLastVisit, lastTreatmen
           </div>
 
           {sent ? (
-            <span className="flex items-center gap-1.5 shrink-0 text-xs font-medium text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full">
+            <span className="flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full w-fit">
               <CheckCircle2 className="w-3.5 h-3.5" />
               Invitación enviada
             </span>
@@ -50,7 +50,7 @@ export default function RecoveryCard({ patient, daysSinceLastVisit, lastTreatmen
             <Button
               size="sm"
               onClick={handleSend}
-              className="shrink-0 bg-orange-500 hover:bg-orange-600 text-white"
+              className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto justify-center"
             >
               <UserCheck className="w-3.5 h-3.5 mr-1.5" />
               Invitar de vuelta

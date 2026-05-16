@@ -73,14 +73,14 @@ export default function AppointmentCard({ appointment: apt }: Props) {
         </div>
 
         {isActive && (
-          <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 mt-3 pt-3 border-t border-gray-100">
             {apt.reminder_pending && (
               <Button
                 size="sm"
                 variant="outline"
                 onClick={handleReminder}
                 disabled={loading !== null}
-                className="border-green-300 text-green-700 hover:bg-green-50"
+                className="border-green-300 text-green-700 hover:bg-green-50 sm:w-auto w-full justify-center"
               >
                 <MessageCircle className="w-3.5 h-3.5 mr-1.5" />
                 {loading === 'reminder' ? 'Enviando...' : 'Enviar Recordatorio'}
@@ -91,7 +91,7 @@ export default function AppointmentCard({ appointment: apt }: Props) {
                 size="sm"
                 onClick={handleConfirm}
                 disabled={loading !== null}
-                className="bg-green-600 hover:bg-green-700 text-white"
+                className="bg-green-600 hover:bg-green-700 text-white sm:w-auto w-full justify-center"
               >
                 <CheckCircle className="w-3.5 h-3.5 mr-1.5" />
                 {loading === 'confirm' ? 'Confirmando...' : 'Confirmar Cita'}
@@ -103,7 +103,7 @@ export default function AppointmentCard({ appointment: apt }: Props) {
                 variant="outline"
                 onClick={handleComplete}
                 disabled={loading !== null}
-                className="border-blue-300 text-blue-700 hover:bg-blue-50"
+                className="border-blue-300 text-blue-700 hover:bg-blue-50 sm:w-auto w-full justify-center"
               >
                 <ClipboardCheck className="w-3.5 h-3.5 mr-1.5" />
                 {loading === 'complete' ? 'Guardando...' : 'Atención completada'}
@@ -114,7 +114,7 @@ export default function AppointmentCard({ appointment: apt }: Props) {
               variant="outline"
               onClick={handleNoShow}
               disabled={loading !== null}
-              className="border-red-300 text-red-600 hover:bg-red-50"
+              className="border-red-300 text-red-600 hover:bg-red-50 sm:w-auto w-full justify-center"
             >
               <UserX className="w-3.5 h-3.5 mr-1.5" />
               {loading === 'noshow' ? 'Marcando...' : 'No Asistió'}

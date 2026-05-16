@@ -33,31 +33,34 @@ export default function DemoStoryPanel() {
 
   return (
     <div className="border-b border-amber-200 bg-amber-50">
-      <div className="flex items-center justify-between px-6 py-3">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3">
         <button
           onClick={() => setOpen(!open)}
           className="flex items-center gap-2 hover:opacity-80 transition-opacity"
         >
-          <Sparkles className="w-4 h-4 text-amber-600" />
-          <span className="text-sm font-semibold text-amber-800">Guía de Demo — Presentación para ventas</span>
+          <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+          <span className="text-sm font-semibold text-amber-800">
+            Guía de Demo
+            <span className="hidden sm:inline"> — Presentación para ventas</span>
+          </span>
           {open
-            ? <ChevronUp className="w-4 h-4 text-amber-600" />
-            : <ChevronDown className="w-4 h-4 text-amber-600" />
+            ? <ChevronUp className="w-4 h-4 text-amber-600 shrink-0" />
+            : <ChevronDown className="w-4 h-4 text-amber-600 shrink-0" />
           }
         </button>
 
         <button
           onClick={resetDemo}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-amber-700 border border-amber-300 rounded-lg hover:bg-amber-100 transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 border border-amber-300 rounded-lg hover:bg-amber-100 transition-colors shrink-0"
         >
           <RotateCcw className="w-3 h-3" />
-          Resetear Demo
+          <span className="hidden sm:inline">Resetear Demo</span>
         </button>
       </div>
 
       {open && (
-        <div className="px-6 pb-4">
-          <div className="flex gap-6 overflow-x-auto pb-1">
+        <div className="px-4 sm:px-6 pb-4">
+          <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-1">
             {steps.map((step) => (
               <div key={step.n} className="flex items-start gap-3 min-w-[200px]">
                 <div className="w-7 h-7 rounded-full bg-amber-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">

@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Sidebar />
             <div className="flex-1 flex flex-col overflow-hidden">
               <DemoStoryPanel />
-              <main className="flex-1 overflow-y-auto">
+              <main className="flex-1 overflow-y-auto pb-16 sm:pb-0">
                 {children}
               </main>
             </div>

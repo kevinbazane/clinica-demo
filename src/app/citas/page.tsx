@@ -17,7 +17,7 @@ export default function CitasPage() {
   const [tab, setTab] = useState<TabKey>('today')
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Citas</h1>
         <p className="text-sm text-gray-500 mt-1">Gestión de agenda y confirmaciones</p>

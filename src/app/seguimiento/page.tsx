@@ -10,8 +10,8 @@ import RecoveryCard from '@/components/followup/RecoveryCard'
 const INACTIVE_DAYS = 60
 
 const TABS = [
-  { key: 'followup',  label: 'Post-Atención',      icon: HeartHandshake },
-  { key: 'recovery',  label: 'Recuperar Pacientes', icon: Users },
+  { key: 'followup',  label: 'Post-Atención',      shortLabel: 'Post-Atención', icon: HeartHandshake },
+  { key: 'recovery',  label: 'Recuperar Pacientes', shortLabel: 'Recuperar',     icon: Users },
 ] as const
 
 type TabKey = typeof TABS[number]['key']
@@ -38,7 +38,7 @@ export default function SeguimientoPage() {
   }, [patients, appointments])
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Seguimiento</h1>
         <p className="text-sm text-gray-500 mt-1">Fideliza y recupera pacientes de forma proactiva</p>
@@ -46,19 +46,20 @@ export default function SeguimientoPage() {
 
       {/* Tabs */}
       <div className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1 w-fit">
-        {TABS.map(({ key, label, icon: Icon }) => {
+        {TABS.map(({ key, label, shortLabel, icon: Icon }) => {
           const count = key === 'followup' ? pendingFollowup.length : inactivePatients.length
           return (
             <button
               key={key}
               onClick={() => setTab(key)}
               className={cn(
-                'flex items-center gap-2 px-4 py-1.5 rounded-md text-sm font-medium transition-colors',
+                'flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-md text-sm font-medium transition-colors',
                 tab === key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               )}
             >
-              <Icon className="w-4 h-4" />
-              {label}
+              <Icon className="w-4 h-4 shrink-0" />
+              <span className="hidden sm:inline">{label}</span>
+              <span className="sm:hidden">{shortLabel}</span>
               {count > 0 && (
                 <span className={cn(
                   'text-xs font-semibold px-1.5 py-0.5 rounded-full',
