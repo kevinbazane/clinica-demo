@@ -19,8 +19,12 @@ export default function FollowupCard({ appointment: apt }: Props) {
   const message = buildFollowupMessage(apt.patients.full_name, apt.treatment, apt.datetime)
 
   function handleSend() {
-    updateAppointment(apt.id, { followup_sent: true })
     setModalOpen(true)
+  }
+
+  function handleModalClose() {
+    updateAppointment(apt.id, { followup_sent: true })
+    setModalOpen(false)
   }
 
   return (
@@ -56,7 +60,7 @@ export default function FollowupCard({ appointment: apt }: Props) {
 
       <WhatsAppModal
         isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={handleModalClose}
         patientName={apt.patients.full_name}
         patientPhone={apt.patients.phone}
         message={message}

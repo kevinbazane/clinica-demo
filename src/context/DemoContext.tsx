@@ -4,9 +4,10 @@ import { createContext, useContext, useState, useCallback, useMemo, useRef } fro
 import {
   createDemoPatients,
   createDemoAppointments,
+  createDemoClinicalRecords,
   type AppointmentWithPatient,
 } from '@/data/demo-data'
-import type { Patient, Appointment, AppointmentStatus } from '@/types'
+import type { Patient, Appointment, AppointmentStatus, ClinicalRecord } from '@/types'
 import { isToday } from '@/lib/utils'
 
 const INACTIVE_DAYS = 60
@@ -14,18 +15,19 @@ const INACTIVE_DAYS = 60
 interface DemoContextType {
   patients: Patient[]
   appointments: AppointmentWithPatient[]
+  clinicalRecords: ClinicalRecord[]
   addPatient: (p: { full_name: string; phone: string; email?: string }) => void
   addAppointment: (a: { patient_id: string; datetime: string; treatment: string }) => void
-  updateAppointment: (
-    id: string,
-    updates: Partial<Pick<Appointment, 'status' | 'reminder_pending' | 'reminder_ready' | 'no_show' | 'followup_sent'>>
-  ) => void
+  updateAppointment: (id: string, updates: Partial<Appointment>) => void
+  addClinicalRecord: (r: Omit<ClinicalRecord, 'id' | 'created_at'>) => void
   resetDemo: () => void
   todayCount: number
   totalPatients: number
   pendingConfirmCount: number
   followupCount: number
   inactiveCount: number
+  totalRevenue: number
+  pendingRevenue: number
 }
 
 const DemoContext = createContext<DemoContextType | null>(null)
@@ -33,6 +35,7 @@ const DemoContext = createContext<DemoContextType | null>(null)
 export function DemoProvider({ children }: { children: React.ReactNode }) {
   const [patients, setPatients] = useState<Patient[]>(createDemoPatients)
   const [appointments, setAppointments] = useState<AppointmentWithPatient[]>(createDemoAppointments)
+  const [clinicalRecords, setClinicalRecords] = useState<ClinicalRecord[]>(createDemoClinicalRecords)
 
   const patientsRef = useRef(patients)
   patientsRef.current = patients
@@ -52,7 +55,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const addAppointment = useCallback(
-    (a: { patient_id: string; datetime: string; treatment: string }) => {
+    (a: { patient_id: string; datetime: string; treatment: string; price?: number }) => {
       const patient = patientsRef.current.find((p) => p.id === a.patient_id)
       const newApt: AppointmentWithPatient = {
         id: crypto.randomUUID(),
@@ -66,6 +69,8 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
         followup_sent: false,
         notes: null,
         created_at: new Date().toISOString(),
+        price: a.price ?? 0,
+        paid: false,
         patients: {
           full_name: patient?.full_name ?? 'Paciente',
           phone: patient?.phone ?? '',
@@ -79,10 +84,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
   )
 
   const updateAppointment = useCallback(
-    (
-      id: string,
-      updates: Partial<Pick<Appointment, 'status' | 'reminder_pending' | 'reminder_ready' | 'no_show' | 'followup_sent'>>
-    ) => {
+    (id: string, updates: Partial<Appointment>) => {
       setAppointments((prev) =>
         prev.map((apt) => (apt.id === id ? { ...apt, ...updates } : apt))
       )
@@ -90,9 +92,24 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     []
   )
 
+  const addClinicalRecord = useCallback(
+    (r: Omit<ClinicalRecord, 'id' | 'created_at'>) => {
+      setClinicalRecords((prev) => [
+        {
+          ...r,
+          id: crypto.randomUUID(),
+          created_at: new Date().toISOString(),
+        },
+        ...prev,
+      ])
+    },
+    []
+  )
+
   const resetDemo = useCallback(() => {
     setPatients(createDemoPatients())
     setAppointments(createDemoAppointments())
+    setClinicalRecords(createDemoClinicalRecords())
   }, [])
 
   const { todayCount, pendingConfirmCount } = useMemo(() => {
@@ -122,20 +139,37 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     }, 0)
   }, [patients, appointments])
 
+  const { totalRevenue, pendingRevenue } = useMemo(() => {
+    let total = 0
+    let pending = 0
+    for (const apt of appointments) {
+      if (apt.paid) {
+        total += apt.price
+      } else if (apt.status === 'completed') {
+        pending += apt.price
+      }
+    }
+    return { totalRevenue: total, pendingRevenue: pending }
+  }, [appointments])
+
   return (
     <DemoContext.Provider
       value={{
         patients,
         appointments,
+        clinicalRecords,
         addPatient,
         addAppointment,
         updateAppointment,
+        addClinicalRecord,
         resetDemo,
         todayCount,
         totalPatients: patients.length,
         pendingConfirmCount,
         followupCount,
         inactiveCount,
+        totalRevenue,
+        pendingRevenue,
       }}
     >
       {children}

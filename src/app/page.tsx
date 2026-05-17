@@ -3,7 +3,7 @@
 import { useDemo } from '@/context/DemoContext'
 import StatsCard from '@/components/dashboard/StatsCard'
 import TodayAppointments from '@/components/dashboard/TodayAppointments'
-import { Calendar, Users, BellRing, HeartHandshake } from 'lucide-react'
+import { Calendar, Users, BellRing, HeartHandshake, CreditCard } from 'lucide-react'
 
 function getGreeting() {
   const h = new Date().getHours()
@@ -13,7 +13,7 @@ function getGreeting() {
 }
 
 export default function DashboardPage() {
-  const { todayCount, totalPatients, pendingConfirmCount, followupCount, inactiveCount } = useDemo()
+  const { todayCount, totalPatients, pendingConfirmCount, followupCount, inactiveCount, pendingRevenue } = useDemo()
   const seguimientoTotal = followupCount + inactiveCount
 
   const dateLabel = new Date().toLocaleDateString('es-PE', {
@@ -69,6 +69,20 @@ export default function DashboardPage() {
           subtitle={seguimientoTotal === 0 ? '¡Todo al día!' : 'pendientes'}
         />
       </div>
+
+      {/* Payment pending banner */}
+      {pendingRevenue > 0 && (
+        <div className="flex items-center gap-3 bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3 mb-6">
+          <CreditCard className="w-5 h-5 text-yellow-600 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-yellow-800">Pagos pendientes de cobro</p>
+            <p className="text-xs text-yellow-600 mt-0.5">Tienes S/ {pendingRevenue.toFixed(0)} por cobrar de atenciones completadas</p>
+          </div>
+          <a href="/pagos" className="text-xs font-semibold text-yellow-700 hover:text-yellow-900 shrink-0">
+            Ver pagos →
+          </a>
+        </div>
+      )}
 
       {/* Today appointments card */}
       <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">

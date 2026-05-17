@@ -30,6 +30,7 @@ export default function AppointmentForm({ onSuccess }: Props) {
   const [date, setDate] = useState(getTodayString)
   const [time, setTime] = useState(getNextHourTimeString)
   const [treatment, setTreatment] = useState('')
+  const [price, setPrice] = useState('')
   const selectRef = useRef<HTMLSelectElement>(null)
 
   useEffect(() => { selectRef.current?.focus() }, [])
@@ -56,9 +57,10 @@ export default function AppointmentForm({ onSuccess }: Props) {
     }
 
     const patient = patients.find((p) => p.id === patientId)
-    addAppointment({ patient_id: patientId, datetime, treatment })
+    addAppointment({ patient_id: patientId, datetime, treatment, price: parseFloat(price) || 0 })
     setPatientId('')
     setTreatment('')
+    setPrice('')
     onSuccess?.()
 
     await Swal.fire({
@@ -76,7 +78,7 @@ export default function AppointmentForm({ onSuccess }: Props) {
   return (
     <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-5">
       <h3 className="text-sm font-semibold text-gray-700 mb-4">Nueva cita rápida</h3>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         <select
           ref={selectRef}
           value={patientId}
@@ -119,6 +121,16 @@ export default function AppointmentForm({ onSuccess }: Props) {
             {TREATMENTS.map((t) => <option key={t} value={t} />)}
           </datalist>
         </div>
+
+        <input
+          type="number"
+          min="0"
+          step="0.01"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          placeholder="Monto S/"
+          className={`col-span-1 ${INPUT_CLASS}`}
+        />
       </div>
 
       <Button type="submit" className="mt-3 w-full sm:w-auto bg-blue-600 hover:bg-blue-700">

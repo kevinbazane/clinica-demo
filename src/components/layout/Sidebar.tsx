@@ -3,19 +3,20 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, Users, CalendarDays, HeartHandshake } from 'lucide-react'
+import { LayoutDashboard, Users, CalendarDays, HeartHandshake, CreditCard } from 'lucide-react'
 import { useDemo } from '@/context/DemoContext'
 
 export default function Sidebar() {
   const pathname = usePathname()
-  const { followupCount, inactiveCount } = useDemo()
+  const { followupCount, inactiveCount, pendingRevenue } = useDemo()
   const seguimientoTotal = followupCount + inactiveCount
 
   const links = [
-    { href: '/',            label: 'Dashboard',   icon: LayoutDashboard, badge: 0 },
-    { href: '/citas',       label: 'Citas',        icon: CalendarDays,    badge: 0 },
-    { href: '/pacientes',   label: 'Pacientes',    icon: Users,           badge: 0 },
-    { href: '/seguimiento', label: 'Seguimiento',  icon: HeartHandshake,  badge: seguimientoTotal },
+    { href: '/',            label: 'Dashboard',   icon: LayoutDashboard, badge: 0,               badgeType: 'neutral' },
+    { href: '/citas',       label: 'Citas',        icon: CalendarDays,    badge: 0,               badgeType: 'neutral' },
+    { href: '/pacientes',   label: 'Pacientes',    icon: Users,           badge: 0,               badgeType: 'neutral' },
+    { href: '/pagos',       label: 'Pagos',        icon: CreditCard,      badge: pendingRevenue,  badgeType: 'money'   },
+    { href: '/seguimiento', label: 'Seguimiento',  icon: HeartHandshake,  badge: seguimientoTotal, badgeType: 'count'  },
   ]
 
   return (
@@ -37,7 +38,7 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 px-4 py-4 space-y-1">
-          {links.map(({ href, label, icon: Icon, badge }) => (
+          {links.map(({ href, label, icon: Icon, badge, badgeType }) => (
             <Link
               key={href}
               href={href}
@@ -53,8 +54,13 @@ export default function Sidebar() {
                 {label}
               </span>
               {badge > 0 && (
-                <span className="text-xs font-semibold bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
-                  {badge}
+                <span className={cn(
+                  'text-xs font-semibold px-1.5 py-0.5 rounded-full min-w-[20px] text-center',
+                  badgeType === 'money'
+                    ? 'bg-yellow-100 text-yellow-700'
+                    : 'bg-orange-100 text-orange-700'
+                )}>
+                  {badgeType === 'money' ? `S/${badge}` : badge}
                 </span>
               )}
             </Link>
