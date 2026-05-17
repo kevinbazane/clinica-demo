@@ -17,7 +17,7 @@ interface DemoContextType {
   appointments: AppointmentWithPatient[]
   clinicalRecords: ClinicalRecord[]
   addPatient: (p: { full_name: string; phone: string; email?: string }) => void
-  addAppointment: (a: { patient_id: string; datetime: string; treatment: string }) => void
+  addAppointment: (a: { patient_id: string; datetime: string; treatment: string; price?: number }) => void
   updateAppointment: (id: string, updates: Partial<Appointment>) => void
   addClinicalRecord: (r: Omit<ClinicalRecord, 'id' | 'created_at'>) => void
   resetDemo: () => void
