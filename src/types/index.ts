@@ -45,3 +45,7 @@ export interface DashboardStats {
   totalPatients: number
   pendingConfirmCount: number
 }
+
+export type ToothCondition = 'healthy' | 'caries' | 'filling' | 'crown' | 'extracted' | 'root-canal'
+export type OdontogramSurface = 'B' | 'M' | 'O' | 'D' | 'L'
+export type OdontogramData = Record<number, Partial<Record<OdontogramSurface, ToothCondition>>>

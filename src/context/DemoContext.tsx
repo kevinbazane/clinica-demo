@@ -7,7 +7,7 @@ import {
   createDemoClinicalRecords,
   type AppointmentWithPatient,
 } from '@/data/demo-data'
-import type { Patient, Appointment, AppointmentStatus, ClinicalRecord } from '@/types'
+import type { Patient, Appointment, AppointmentStatus, ClinicalRecord, ToothCondition, OdontogramSurface, OdontogramData } from '@/types'
 import { isToday } from '@/lib/utils'
 
 const INACTIVE_DAYS = 60
@@ -20,6 +20,8 @@ interface DemoContextType {
   addAppointment: (a: { patient_id: string; datetime: string; treatment: string; price?: number }) => void
   updateAppointment: (id: string, updates: Partial<Appointment>) => void
   addClinicalRecord: (r: Omit<ClinicalRecord, 'id' | 'created_at'>) => void
+  odontograms: Record<string, OdontogramData>
+  updateToothSurface: (patientId: string, tooth: number, surface: OdontogramSurface, condition: ToothCondition) => void
   resetDemo: () => void
   todayCount: number
   totalPatients: number
@@ -36,6 +38,15 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
   const [patients, setPatients] = useState<Patient[]>(createDemoPatients)
   const [appointments, setAppointments] = useState<AppointmentWithPatient[]>(createDemoAppointments)
   const [clinicalRecords, setClinicalRecords] = useState<ClinicalRecord[]>(createDemoClinicalRecords)
+  const [odontograms, setOdontograms] = useState<Record<string, OdontogramData>>({
+    p1: {
+      16: { O: 'filling', M: 'caries' },
+      26: { O: 'filling' },
+      36: { O: 'filling', D: 'filling' },
+      46: { O: 'caries', D: 'caries' },
+      11: { B: 'crown', O: 'crown', L: 'crown' },
+    },
+  })
 
   const patientsRef = useRef(patients)
   patientsRef.current = patients
@@ -106,10 +117,35 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     []
   )
 
+  const updateToothSurface = useCallback(
+    (patientId: string, tooth: number, surface: OdontogramSurface, condition: ToothCondition) => {
+      setOdontograms((prev) => ({
+        ...prev,
+        [patientId]: {
+          ...(prev[patientId] ?? {}),
+          [tooth]: {
+            ...(prev[patientId]?.[tooth] ?? {}),
+            [surface]: condition,
+          },
+        },
+      }))
+    },
+    []
+  )
+
   const resetDemo = useCallback(() => {
     setPatients(createDemoPatients())
     setAppointments(createDemoAppointments())
     setClinicalRecords(createDemoClinicalRecords())
+    setOdontograms({
+      p1: {
+        16: { O: 'filling', M: 'caries' },
+        26: { O: 'filling' },
+        36: { O: 'filling', D: 'filling' },
+        46: { O: 'caries', D: 'caries' },
+        11: { B: 'crown', O: 'crown', L: 'crown' },
+      },
+    })
   }, [])
 
   const { todayCount, pendingConfirmCount } = useMemo(() => {
@@ -162,6 +198,8 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
         addAppointment,
         updateAppointment,
         addClinicalRecord,
+        odontograms,
+        updateToothSurface,
         resetDemo,
         todayCount,
         totalPatients: patients.length,

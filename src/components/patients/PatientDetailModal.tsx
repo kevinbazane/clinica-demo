@@ -8,6 +8,7 @@ import { formatDate, formatTime } from '@/lib/utils'
 import { FileText, Phone, Mail, Calendar, Plus, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Patient } from '@/types'
+import Odontogram from '@/components/odontogram/Odontogram'
 
 interface Props {
   patient: Patient
@@ -16,9 +17,10 @@ interface Props {
 }
 
 const TABS = [
-  { key: 'info',    label: 'Información' },
-  { key: 'history', label: 'Historial Clínico' },
-  { key: 'citas',   label: 'Citas' },
+  { key: 'info',         label: 'Información' },
+  { key: 'history',      label: 'Historial' },
+  { key: 'odontogram',   label: 'Odontograma' },
+  { key: 'citas',        label: 'Citas' },
 ] as const
 type TabKey = typeof TABS[number]['key']
 
@@ -202,6 +204,11 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
                 </div>
               )}
             </div>
+          )}
+
+          {/* ── Odontograma ── */}
+          {tab === 'odontogram' && (
+            <Odontogram patientId={patient.id} />
           )}
 
           {/* ── Citas ── */}
